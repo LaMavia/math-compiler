@@ -9,17 +9,7 @@ let fs =
         }
       )
   );
-let eqs = [|"2*3^5-1", "f(2)", "2^2+3+(1+4)!"|];
-eqs[0]
-->Js.String2.splitByRe(Regex.re_space)
-->Belt.Array.reduce([], (acc, c) =>
-    switch (c) {
-    | Some(c) => acc @ Lexer.lex(c)
-    | _ => acc
-    }
-  )
-->Parser.parse
-->Exec.exec([], Belt.Array.concat(Evaluables.static_functions, fs)) /* ->Helpers.deep_log*/;
-// ->Belt.List.toArray
 
-ReactDOMRe.renderToElementWithId(<Ui__App />, "root");
+"2 mod 5"
+->Calc.calculate([], fs)
+->Helpers.deep_log /* ReactDOMRe.renderToElementWithId(<Ui__App />, "root")*/ /* ->Belt.List.toArra*/;

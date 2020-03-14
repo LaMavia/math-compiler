@@ -48,7 +48,7 @@ let exec = (tree, global_scope, funcs) => {
     | x =>
       raise(
         Js.Exn.raiseEvalError(
-          "Compilation error: empty node encountered\n" ++ Helpers.deep(x),
+          "Compilation error: ye've just witnessed some weird ass witchery...\n" ++ Helpers.deep(x),
         ),
       )
     };

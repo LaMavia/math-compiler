@@ -27,6 +27,7 @@ let static_functions =
     {name: "tanh", eval: tanh},
     {name: "log", eval: log},
     {name: "neg", eval: (~-.)},
+    {name: "abs", eval: abs_float},
     {
       name: "!",
       eval: {
@@ -54,8 +55,9 @@ let operators = [|
   {name: "*", identity: 1.0, eval: ( *. )},
   {name: "/", identity: 1.0, eval: (/.)},
   {name: "^", identity: 1.0, eval: ( ** )},
-  {name: "_", identity: 1.0, eval: (a, b) => b ** (1.0 /. a)},
+  {name: "_", identity: 1.0, eval: Math.root}, //
   {name: "mod", identity: max_float, eval: mod_float},
+  {name: "root", identity: max_float, eval: Math.root},
 |];
 
 let eval_op = (op, f) =>
@@ -74,5 +76,11 @@ type var = {
   val_: float,
 };
 
-let is_op = c => Array.exists(({name}: operator) => name == c, operators);
+let global_scope = [
+  {name: "e", val_: Js.Math._E},
+  {name: "pi", val_: Js.Math._PI},
+  {name: "R", val_: 8.31},
+];
+
+let is_op = c => Array.exists(({name}: operator) => {name == c}, operators);
 let is_suffix = c => ["!"] |> List.exists(o => o == c);

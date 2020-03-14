@@ -16,3 +16,5 @@ let escape_regex = str =>
 
 /**matches: (name, variable, expression) */
 let re_function_exp = [%bs.re "/(?<name>\w+)\((?<var>\w)\)\s*=\s*(?<exp>.*)/"];
+/**matches: (name, expression) */
+let re_var_exp = [%bs.re "/(?<name>\w+)\s*=\*(?<exp>.*)/"];

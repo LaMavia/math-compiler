@@ -25,9 +25,10 @@ let lex = input => {
       let next = loop(tail);
 
       switch (next_char, state) {
-      | ("(", None) => next(None, [Special(Bracket(Open)), ...t])
-      | (")", None) => next(None, [Special(Bracket(Close)), ...t])
+      | ("(" | "[", None) => next(None, [Special(Bracket(Open)), ...t])
+      | (")" | "]", None) => next(None, [Special(Bracket(Close)), ...t])
 
+      // state: None
       | (a, None) when is_num(a) => next(Some(Rune(Number(a))), t)
       | (a, None) when is_name(a) => next(Some(Rune(Name(a))), t)
       | (a, None) when is_op(a) => next(None, [Eval(Infix(a)), ...t])
@@ -39,20 +40,33 @@ let lex = input => {
         next(Some(Rune(Number(n ++ a))), t)
       | (a, Some(Rune(Number(_)) as n)) when is_name(a) =>
         next(Some(Rune(Name(a))), [Eval(Infix("*")), n, ...t])
-      | ("(", Some(Rune(Number(_)) as n)) =>
+      | ("(" | "[", Some(Rune(Number(_)) as n)) =>
         next(None, [Special(Bracket(Open)), Eval(Infix("*")), n, ...t])
 
       // state: Name
       | (a, Some(Rune(Name(n)))) when is_name(a) =>
-        next(Some(Rune(Name(n ++ a))), t)
-      | (a, Some(Rune(Name(_)) as n)) when is_num(a) =>
-        next(Some(Rune(Number(a))), [Eval(Infix("^")), n, ...t])
-      | ("(", Some(Rune(Name(n)))) =>
+        let op' = n ++ a;
+        if (is_op(op')) {
+          next(None, [Eval(Infix(op')), ...t]);
+        } else {
+          next(Some(Rune(Name(n ++ a))), t);
+        };
+      | (a, Some(Rune(Name(n_raw)) as n)) when is_num(a) =>
+        if (is_op(n_raw)) {
+          next(Some(Rune(Number(a))), [Eval(Infix(n_raw)), ...t]);
+        } else {
+          next(Some(Rune(Number(a))), [Eval(Infix("^")), n, ...t]);
+        }
+      | ("(" | "[", Some(Rune(Name(n)))) =>
         next(None, [Special(Bracket(Open)), Eval(Function(n)), ...t])
 
-      | ("(", Some(tk)) => next(None, [Special(Bracket(Open)), tk, ...t])
-      | (")", Some(tk)) => next(None, [Special(Bracket(Close)), tk, ...t])
+      // Bracket and then some
+      | ("(" | "[", Some(tk)) =>
+        next(None, [Special(Bracket(Open)), tk, ...t])
+      | (")" | "]", Some(tk)) =>
+        next(None, [Special(Bracket(Close)), tk, ...t])
 
+      // Operator and then some
       | (a, Some((Eval(Function(_)) | Rune(Number(_) | Name(_))) as tk))
           when is_op(a) =>
         next(None, [Eval(Infix(a)), tk, ...t])

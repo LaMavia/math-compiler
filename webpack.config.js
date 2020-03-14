@@ -1,14 +1,33 @@
-const path = require('path');
+const path = require('path')
+const outputDir = path.join(__dirname, 'build/')
+
+const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
   entry: './src/Index.bs.js',
-  // If you ever want to use webpack during development, change 'production'
-  // to 'development' as per webpack documentation. Again, you don't have to
-  // use webpack or any other bundler during development! Recheck README if
-  // you didn't know this
-  mode: 'production',
+  mode: isProd ? 'production' : 'development',
   output: {
-    path: path.join(__dirname, "bundleOutput"),
-    filename: 'index.js',
+    path: outputDir,
+    filename: 'Index.js',
   },
-};
+  module: {
+    rules: [
+      {
+        test: /\.svg$/,
+        use: ['svg-inline-loader'],
+      },
+    ],
+  },
+  resolve: {
+    alias: {
+      '@public': path.resolve('./build/'),
+    },
+  },
+  plugins: [],
+  devServer: {
+    compress: true,
+    contentBase: outputDir,
+    port: process.env.PORT || 8000,
+    historyApiFallback: true,
+  },
+}

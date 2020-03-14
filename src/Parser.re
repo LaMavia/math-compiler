@@ -48,7 +48,7 @@ let insert = (tree, v) =>
     | a =>
       raise(
         Js.Exn.raiseError(
-          {j|Unmatched type of tree while inserting { $a }|j},
+          {j|Unmatched type of tree while inserting { $a ; $v }|j},
         ),
       )
     };
@@ -83,9 +83,6 @@ let parse = tokens => {
     | (NInfix(old_op, _, _) as old_tree, old_state, Some(Eval(Infix(op))))
         when weight(op) <= weight(old_op) =>
       loop(NInfix(op, old_tree->insert(old_state), Empty), Empty)
-    // 8
-    // | (old_tree, old_state, Some(Eval(Infix(op)))) =>
-    //   loop(NInfix(op, old_tree, old_state), Empty)
     // 6.1
     | (old_tree, old_state, Some(Special(Bracket(Open)))) =>
       loop(old_tree, old_state->insert(loop(Empty, Empty)))
@@ -136,52 +133,24 @@ let func_exp_of_string = f =>
       )
   );
 
-/*
- // Primary token (STATE: None)
-       | (None, Some(NRaw(Special(Bracket(Close)))), Some(b)) =>
-         input := [b, ...input_tail];
-         tokens_tail;
-       | (_, Some(NRaw(Special(Bracket(Close)))), None) => next(tokens)
-
-       | (None, Some(NRaw(Special(Bracket(Open)))), Some(a)) =>
-         input := [a, ...input_tail];
-         next(next([]) @ tokens_tail);
-       // Idk why, but let's allow it for now
-       | (None, Some(NRaw(Special(Bracket(Open)))), None) =>
-         next(next([]) @ tokens_tail)
-
-       | (None, Some(NVal(n)), Some(NRaw(Special(Bracket(Close))))) =>
-         [NVal(n)];
-       | (None, Some(NVal(v)), None) => next([NVal(v), ...tokens_tail])
-       | (None, Some(v), None) => [v]
-       | (
-           None,
-           Some(NRaw(Eval(Infix(("+" | "-") as op)))),
-           Some(NVal(_) as n),
-         ) =>
-         next([NInfix(op, NVal(Number("0")), n), ...tokens_tail])
-       | (
-           None,
-           Some(NVal(_) as a),
-           Some(NRaw(Eval(Infix(c_op))) as op_raw),
-         )
-           when c_op == op =>
-         input := [op_raw, ...input_tail];
-         next([a, ...tokens_tail]);
-       | (None, Some(a), Some(NRaw(Eval(Suffix(f)))))
-       // Normal state
-       | (Some(a), Some(NRaw(Eval(Suffix(f)))), None) =>
-         next([NFunc(f, a), ...tokens_tail])
-       | (Some(a), Some(NRaw(Eval(Infix(op_name))) as op_raw), Some(b)) =>
-         if (op_name == op) {
-           next([NInfix(op, a, b), ...tokens_tail]);
-         } else {
-           next([a, op_raw, b, ...tokens_tail]);
-         }
-       | (
-           None,
-           Some(NRaw(Eval(Function(f)))),
-           Some(NRaw(Special(Bracket(Open)))),
-         ) =>
-         // input := [a, ...input_tail];
-         next([NFunc(f, next([])->List.hd), ...tokens_tail]) */
+let var_of_string = (f, scope, funcs) =>
+  Belt.(
+    Js.Re.exec_(Regex.re_var_exp, f)
+    ->Option.map(r =>
+        r
+        ->Js.Re.captures
+        ->Array.map(x => x |> Js.Nullable.toOption |> Option.getExn)
+        ->Array.sliceToEnd(1)
+      )
+    ->Option.map(r =>
+        switch (r) {
+        | [|n, e|] => {name: n, val_: e->Calc.calculate(scope, funcs)}
+        | _ =>
+          raise(
+            Js.Exn.raiseError(
+              {j|Error converting "$f" to a function expression|j},
+            ),
+          )
+        }
+      )
+  );

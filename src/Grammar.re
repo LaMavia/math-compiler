@@ -9,6 +9,7 @@ type rune =
 
 type special =
   | Bracket(bracket)
+  // | Absolute(bracket)
   // | Assign
 and bracket =
   | Open
