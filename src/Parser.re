@@ -133,7 +133,7 @@ let func_exp_of_string = f =>
       )
   );
 
-let var_of_string = (f, scope, funcs) =>
+let var_of_string = f =>
   Belt.(
     Js.Re.exec_(Regex.re_var_exp, f)
     ->Option.map(r =>
@@ -144,7 +144,7 @@ let var_of_string = (f, scope, funcs) =>
       )
     ->Option.map(r =>
         switch (r) {
-        | [|n, e|] => {name: n, val_: e->Calc.calculate(scope, funcs)}
+        | [|n, e|] => {name: n, val_: e->Lexer.lex->parse}
         | _ =>
           raise(
             Js.Exn.raiseError(

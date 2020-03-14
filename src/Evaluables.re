@@ -73,13 +73,13 @@ let eval_op = (op, f) =>
 
 type var = {
   name: string,
-  val_: float,
+  val_: node,
 };
 
 let global_scope = [
-  {name: "e", val_: Js.Math._E},
-  {name: "pi", val_: Js.Math._PI},
-  {name: "R", val_: 8.31},
+  {name: "e", val_: Js.Math._E->Js.Float.toString->Grammar.Number},
+  {name: "pi", val_: Js.Math._PI->Js.Float.toString->Grammar.Number},
+  {name: "R", val_: 8.31->Js.Float.toString->Grammar.Number},
 ];
 
 let is_op = c => Array.exists(({name}: operator) => {name == c}, operators);

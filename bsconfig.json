@@ -19,7 +19,7 @@
     "in-source": true
   },
   "suffix": ".bs.js",
-  "bs-dependencies": ["reason-react", "@glennsl/bs-jest"],
+  "bs-dependencies": ["reason-react", "@glennsl/bs-jest", "reductive"],
   "warnings": {
     "error": "+101"
   },

@@ -26,7 +26,7 @@ module.exports = {
   plugins: [],
   devServer: {
     compress: true,
-    contentBase: outputDir,
+    contentBase: __dirname,
     port: process.env.PORT || 8000,
     historyApiFallback: true,
   },

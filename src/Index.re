@@ -10,6 +10,8 @@ let fs =
       )
   );
 
-"2 mod 5"
-->Calc.calculate([], fs)
-->Helpers.deep_log /* ReactDOMRe.renderToElementWithId(<Ui__App />, "root")*/ /* ->Belt.List.toArra*/;
+"e"->Calc.calculate([], [||])->Helpers.deep_log;
+ReactDOMRe.renderToElementWithId(
+  <Store.Provider store=Store.app_store> <Router /> </Store.Provider>,
+  "root",
+);

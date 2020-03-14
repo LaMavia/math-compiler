@@ -1,0 +1,15 @@
+:root {
+  --layout-w: 100vw;
+}
+.layout {
+  width: var(--layout-w);
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template: 1fr var(--nav-h) / 1fr;
+  grid-template-areas: 'main' 'nav';
+}
+
+.main {
+  grid-area: main;
+}

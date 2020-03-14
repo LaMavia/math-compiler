@@ -27,13 +27,16 @@ let exec = (tree, global_scope, funcs) => {
     switch (node) {
     | Empty => 0.
     | Number(n) => float_of_string(n)
-    | Variable(v) => get_var(scope, v)
+    | Variable(v) => get_var(scope, v)->calc(scope)
     | NVal(v) => calc(v, scope)
     | NFunc(f, arg) =>
       let f_def = get_func(funcs, f);
       switch (f_def) {
       | UserFunc({var, exp}) =>
-        let f_scope = [{name: var, val_: calc(arg, scope)}, ...scope];
+        let f_scope = [
+          {name: var, val_: calc(arg, scope)->Js.Float.toString->Number},
+          ...scope,
+        ];
         calc(exp, f_scope);
       | StaticFunc({eval}) => eval(calc(arg, scope))
       };
@@ -48,7 +51,8 @@ let exec = (tree, global_scope, funcs) => {
     | x =>
       raise(
         Js.Exn.raiseEvalError(
-          "Compilation error: ye've just witnessed some weird ass witchery...\n" ++ Helpers.deep(x),
+          "Compilation error: ye've just witnessed some weird ass witchery...\n"
+          ++ Helpers.deep(x),
         ),
       )
     };
