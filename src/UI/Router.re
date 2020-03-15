@@ -11,7 +11,7 @@ let make = () => {
 
   <Layout>
     {switch (url.path) {
-     | [] => <Page__Calc dispatch />
+     | [_,] => <Page__Calc dispatch />
      | x =>
        x->Helpers.deep_log;
        <Page__Calc dispatch />;
