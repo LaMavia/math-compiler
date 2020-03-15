@@ -15,6 +15,9 @@ let escape_regex = str =>
   str->Js.String2.replaceByRe([%bs.re "/[.*+?^${}()|[\]\\-]/g"], "\\$&");
 
 /**matches: (name, variable, expression) */
-let re_function_exp = [%bs.re "/(?<name>\w+)\((?<var>\w)\)\s*=\s*(?<exp>.*)/"];
+let re_function_exp = [%bs.re "/(\w+)\((\w)\)\s*=\s*(.*)/"]; // [%bs.re "/(?<name>\w+)\((?<var>\w)\)\s*=\s*(?<exp>.*)/"];
 /**matches: (name, expression) */
-let re_var_exp = [%bs.re "/(?<name>\w+)\s*=\*(?<exp>.*)/"];
+let re_var_exp = [%bs.re "/(\w+)\s*=\s*(.*)/"] /* [%bs.re "/(?<name>\w+)\s*=\*(?<exp>.*)/"]*/;
+let re_var_name = [%bs.re "/(\w+)=/i"]
+let is_var_exp = test_(re_var_exp)
+let is_function_exp = test_(re_function_exp)

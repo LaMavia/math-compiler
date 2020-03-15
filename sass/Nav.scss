@@ -9,4 +9,11 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-evenly;
+  box-shadow: 0 0 .8px 0px #000000;
+
+  &__link {
+    color: #2c2c2c;
+    line-height: var(--nav-h);
+    text-decoration: none;
+  }
 }

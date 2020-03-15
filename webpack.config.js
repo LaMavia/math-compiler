@@ -20,7 +20,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@public': path.resolve('./build/'),
+      '@public': path.resolve(outputDir),
     },
   },
   plugins: [],

@@ -23,6 +23,8 @@ type mode_action =
   | IncOffset(int)
   | ChangeOffset(int);
 
+type input = [ | `var | `func | `exp];
+
 [@react.component]
 let make = (~dispatch) => {
   let (input, ans) = useSelector(calc_selector);
@@ -41,12 +43,25 @@ let make = (~dispatch) => {
       (`main, 0),
     );
 
+  let (type_of_input, eq_btn_display) =
+    if (input->Regex.is_var_exp) {
+      (`var, "+var");
+    } else if (input->Regex.is_function_exp) {
+      (`func, "+f");
+    } else {
+      (`exp, "=");
+    };
+
   let action_buttons: array(array(action_button)) = [|
     [|
       {
         content: "del",
         onClick: _ => {
           dispatch(Del(offset));
+          let len = input->String.length;
+          if (offset >= len) {
+            local_dispatch(ChangeOffset(len - 1 >= 0 ? len - 1 : 0));
+          };
         },
         size: 1.,
       },
@@ -54,6 +69,7 @@ let make = (~dispatch) => {
         content: "ac",
         onClick: _ => {
           dispatch(ChangeInput(""));
+          local_dispatch(ChangeOffset(0));
         },
         size: 1.0,
       },
@@ -72,9 +88,13 @@ let make = (~dispatch) => {
         size: 1.5,
       },
       {
-        content: "=",
+        content: eq_btn_display,
         onClick: _ => {
-          dispatch(Calc);
+          switch (type_of_input) {
+          | `var => dispatch(AddVar(input))
+          | `func => dispatch(AddFunc(input))
+          | `exp => dispatch(Calc)
+          };
         },
         size: 4.,
       },
@@ -130,7 +150,13 @@ let make = (~dispatch) => {
       ("^", "tan("),
       ("_", "atan("),
     |],
-    [|(".", "k"), ("0", "R"), ("ans", "Na"), ("(", "!"), (")", " mod ")|],
+    [|
+      (".", "="),
+      ("0", "R"),
+      ("ans", "Na"),
+      ("(", "!"),
+      (")", " mod "),
+    |],
   |];
   <form onSubmit={e => {e->ReactEvent.Form.preventDefault}} className="calc">
     <div className="calc__top">

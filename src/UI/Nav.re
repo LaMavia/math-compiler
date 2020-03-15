@@ -2,8 +2,8 @@ open ReasonReact;
 [@react.component]
 let make = () => {
   <nav className="nav">
-    <Link href="/"> "calc"->string </Link>
-    <Link href="/vars"> "vars"->string </Link>
-    <Link href="/funcs"> "funcs"->string </Link>
+    <Link className="nav__link" href="/"> "2+2"->string </Link>
+    <Link className="nav__link" href="/vars"> "x=5"->string </Link>
+    <Link className="nav__link" href="/funcs"> "f(x)"->string </Link>
   </nav>;
 };
