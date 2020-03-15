@@ -1,7 +1,7 @@
 :root {
   --calc-h: calc(100vh - var(--nav-h));
-  --calc-top-h: calc(0.15 * var(--calc-h));
-  --calc-action-btn-h: 3.5em;
+  --calc-top-h: calc(0.225 * var(--calc-h));
+  --calc-action-btn-h: 10vh;
   --calc-btn-s: calc(
     (100vh - var(--nav-h) - var(--calc-top-h) - var(--calc-action-btn-h) * 2) / 4
   ); // calc(var(--layout-w) / 5)
@@ -28,9 +28,9 @@
       color: #1b1b1b;
       height: 50%;
       width: 100%;
-      font-size: 1.5rem;
+      font-size: 3rem;
       line-height: calc(var(--calc-top-h) / 2);
-      padding: 0 10px;
+      padding: 0 20px;
 
       &:focus {
         outline: 1px #1b1b1b dashed;
@@ -78,6 +78,8 @@
             background-color: #fefefe;
             color: #2c2c2c;
             border: none;
+            font-size: 1.75rem;
+            font-weight: 400;
             
             &--action {
               text-transform: uppercase;
@@ -86,8 +88,7 @@
             }
             
             &--board {
-              box-shadow:  0 0 0.8px 0px #2c2c2c;
-              font-size: 1.1rem;
+              box-shadow:  0 0 2px 0px #2c2c2c;
             }
           }
         }
