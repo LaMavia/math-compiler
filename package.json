@@ -9,7 +9,9 @@
     "dev": "concurrently \"webpack-dev-server\" \"webpack -w\" ",
     "test": "npm run build && jest",
     "sass": "sass ./sass/index.scss ./build/css/index.css --watch  --load-path=node_modules/",
-    "sass:production": "sass ./sass/index.scss ./build/css/index.css --style=compressed"
+    "sass:production": "sass ./sass/index.scss ./build/css/index.css --style=compressed",
+    "webpack:production": "NODE_ENV=production webpack",
+    "deploy": "npm run sass:production; npm run webpack:production"
   },
   "keywords": [
     "BuckleScript"

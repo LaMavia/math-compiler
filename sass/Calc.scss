@@ -1,3 +1,97 @@
+:root {
+  --calc-h: calc(100vh - var(--nav-h));
+  --calc-top-h: calc(0.15 * var(--calc-h));
+  --calc-action-btn-h: 3.5em;
+  --calc-btn-s: calc(
+    (100vh - var(--nav-h) - var(--calc-top-h) - var(--calc-action-btn-h) * 2) / 4
+  ); // calc(var(--layout-w) / 5)
+}
+
 .calc {
-  
+  width: 100%;
+  height: var(--calc-h);
+  display: flex;
+  flex-flow: column nowrap;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  &__top {
+    height: var(--calc-top-h);
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    background-color: #ffffff;
+
+    &__eq,
+    &__output {
+      appearance: none;
+      border: none;
+      color: #1b1b1b;
+      height: 50%;
+      width: 100%;
+      font-size: 1.5rem;
+      line-height: calc(var(--calc-top-h) / 2);
+      padding: 0 10px;
+
+      &:focus {
+        outline: 1px #1b1b1b dashed;
+      }
+    }
+
+    &__output {
+      text-align: right;
+    }
+  }
+
+  &__keys {
+    height: calc(4 * var(--calc-btn-s));
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+
+    &--actions {
+      height: calc(2 * var(--calc-action-btn-h));
+
+      .calc__keys__row {
+        height: var(--calc-action-btn-h);
+      }
+    }
+
+    &__row {
+      width: 100%;
+      height: var(--calc-btn-s);
+
+      &__items {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        list-style: none;
+        // border: .2px #3f3f3f ridge;
+
+        &__key {
+          --size: 1;
+          flex: var(--size) 1 100%;
+
+          &__btn {
+            width: 100%;
+            height: 100%;
+            background-color: #fefefe;
+            color: #2c2c2c;
+            border: none;
+            
+            &--action {
+              text-transform: uppercase;
+              color: #ffffff;
+              background-color: #2c2c2c;
+            }
+            
+            &--board {
+              box-shadow:  0 0 0.8px 0px #2c2c2c;
+              font-size: 1.1rem;
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -23,6 +23,7 @@ let get_func = (funcs: array(Evaluables.func), name) =>
 
 /**(tree: node, global_scope: list(var), funcs: list(func)) */
 let exec = (tree, global_scope, funcs) => {
+  let funcs = Array.concat([funcs, static_functions]);
   let rec calc = (node, scope) =>
     switch (node) {
     | Empty => 0.

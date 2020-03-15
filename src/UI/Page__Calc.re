@@ -8,11 +8,7 @@ type action_button = {
   size: float,
 };
 
-type button = {
-  main: string,
-  alt: string,
-  size: float,
-};
+type button = (string, string);
 
 let string_of_ans = ans =>
   switch (ans) {
@@ -29,18 +25,21 @@ type mode_action =
 
 [@react.component]
 let make = (~dispatch) => {
+  let (input, ans) = useSelector(calc_selector);
   let ((mode, offset), local_dispatch) =
     useReducer(
       ((m, o), a) =>
         switch (a) {
         | ChangeMode => (m == `main ? `alt : `main, o)
-        | IncOffset(n) => (m, o + n)
+        | IncOffset(n) =>
+          let len = input->Js.String2.length;
+          let o' = o + n;
+          (m, o' > len - 1 || o' < 0 ? o : o');
         | ChangeOffset(n) => (m, n)
         | _ => (m, o)
         },
-      (`main, 1),
+      (`main, 0),
     );
-  let (input, ans) = useSelector(calc_selector);
 
   let action_buttons: array(array(action_button)) = [|
     [|
@@ -109,7 +108,30 @@ let make = (~dispatch) => {
       },
     |],
   |];
-  let buttons: array(array(button)) = [||];
+  let buttons: array(array(button)) = [|
+    [|
+      ("7", "x"),
+      ("8", "v"),
+      ("9", "t"),
+      ("+", "sin("),
+      ("-", "asin("),
+    |],
+    [|
+      ("4", "y"),
+      ("5", "a"),
+      ("6", "r"),
+      ("*", "cos("),
+      ("/", "acos("),
+    |],
+    [|
+      ("1", "pi"),
+      ("2", "e"),
+      ("3", "kb"),
+      ("^", "tan("),
+      ("_", "atan("),
+    |],
+    [|(".", "k"), ("0", "R"), ("ans", "Na"), ("(", "!"), (")", " mod ")|],
+  |];
   <form onSubmit={e => {e->ReactEvent.Form.preventDefault}} className="calc">
     <div className="calc__top">
       <input
@@ -117,29 +139,30 @@ let make = (~dispatch) => {
         name="input"
         id="input"
         value=input
-        className="calc_top_eq"
+        className="calc__top__eq"
         onChange={e => {
           e->ReactEvent.Form.currentTarget##value->ChangeInput->dispatch
         }}
       />
       <p className="calc__top__output"> {ans->string_of_ans->string} </p>
     </div>
-    <ul className="calc__actions">
+    <ul className="calc__keys calc__keys--actions">
       {action_buttons
-       ->Belt.Array.map(row => {
-           <li className="calc__actions__row">
-             <ul className="calc__actions__row__items">
+       ->Belt.Array.mapWithIndex((i, row) => {
+           <li key={string_of_int(i)} className="calc__keys__row">
+             <ul className="calc__keys__row__items">
                {row
-                ->Belt.Array.map(btn => {
+                ->Belt.Array.mapWithIndex((i, btn) => {
                     <li
+                      key={string_of_int(i)}
                       style=ReactDOMRe.Style.(
                         make()
                         ->unsafeAddProp("--size", btn.size->Js.Float.toString)
                       )
-                      className="calc__actions__row__items__btn">
+                      className="calc__keys__row__items__key">
                       <button
                         onClick={btn.onClick}
-                        className="calc__actions__row__items__btn__key">
+                        className="calc__keys__row__items__key__btn calc__keys__row__items__key__btn--action">
                         btn.content->string
                       </button>
                     </li>
@@ -152,15 +175,25 @@ let make = (~dispatch) => {
     </ul>
     <ul className="calc__keys">
       {buttons
-       ->Belt.Array.map(row => {
-           <li className="calc__keys__row">
+       ->Belt.Array.mapWithIndex((i, row) => {
+           <li key={string_of_int(i)} className="calc__keys__row">
              <ul className="calc__keys__row__items">
                {row
-                ->Belt.Array.map(b =>
-                    <li className="calc__keys__row__items__key">
-                      (mode == `main ? b.main : b.alt)->string
-                    </li>
-                  )
+                ->Belt.Array.mapWithIndex((i, (m, a)) => {
+                    let content = mode == `main ? m : a;
+                    <li
+                      key={string_of_int(i)}
+                      className="calc__keys__row__items__key">
+                      <button
+                        onClick={e => {
+                          e->ReactEvent.Mouse.preventDefault;
+                          dispatch(ConcatInput(content, offset));
+                        }}
+                        className="calc__keys__row__items__key__btn calc__keys__row__items__key__btn--board">
+                        {content->Js.String2.trim->string}
+                      </button>
+                    </li>;
+                  })
                 ->array}
              </ul>
            </li>

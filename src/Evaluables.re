@@ -18,12 +18,15 @@ let static_functions =
   [|
     // cos
     {name: "cos", eval: cos},
+    {name: "acos", eval: acos},
     {name: "cosh", eval: cosh},
     // sin
     {name: "sin", eval: sin},
+    {name: "asin", eval: asin},
     {name: "sinh", eval: sinh},
     // tan
     {name: "tan", eval: tan},
+    {name: "atan", eval: atan},
     {name: "tanh", eval: tanh},
     {name: "log", eval: log},
     {name: "neg", eval: (~-.)},

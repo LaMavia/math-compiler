@@ -10,12 +10,26 @@ type app_action =
   | AddVar(string)
   | RemoveVar(string)
   | ChangeInput(string)
+  | ConcatInput(string, int)
   | Del(int)
   | Calc;
 
 let app_reducer = (state, action) =>
   switch (action) {
   | ChangeInput(n_inp) => {...state, input: n_inp}
+  | ConcatInput(str, offset) =>
+    let s = state.input;
+    let len = Js.String2.length(s);
+
+    {
+      ...state,
+      input:
+        Js.String2.(
+          slice(s, ~from=0, ~to_=len - offset)
+          ++ str
+          ++ sliceToEnd(s, ~from=len - offset)
+        ),
+    };
   | Calc =>
     let ans =
       state.input
@@ -37,8 +51,8 @@ let app_reducer = (state, action) =>
       ...state,
       input:
         Js.String2.(
-          slice(s, ~from=0, ~to_=len - offset)
-          ++ sliceToEnd(s, ~from=len - offset + 1)
+          slice(s, ~from=0, ~to_=len - offset - 1)
+          ++ sliceToEnd(s, ~from=len - offset)
         ),
     };
 
