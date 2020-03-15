@@ -1,6 +1,6 @@
 open Store;
 open React;
-let calc_selector = state => (state.input, state.ans);
+let calc_selector = state => (state.input, state.ans, state.base);
 
 type action_button = {
   content: string,
@@ -27,7 +27,7 @@ type input = [ | `var | `func | `exp];
 
 [@react.component]
 let make = (~dispatch) => {
-  let (input, ans) = useSelector(calc_selector);
+  let (input, ans, base) = useSelector(calc_selector);
   let ((mode, offset), local_dispatch) =
     useReducer(
       ((m, o), a) =>
@@ -51,6 +51,8 @@ let make = (~dispatch) => {
     } else {
       (`exp, "=");
     };
+
+  let (base_n, base_display) = Store.set_of_base(base);
 
   let action_buttons: array(array(action_button)) = [|
     [|
@@ -76,14 +78,14 @@ let make = (~dispatch) => {
       {
         content: "prev",
         onClick: _ => {
-          (); // PASS
+          dispatch(LoadHist(1));
         },
         size: 1.5,
       },
       {
         content: "next",
         onClick: _ => {
-          (); // PASS
+          dispatch(LoadHist(-1));
         },
         size: 1.5,
       },
@@ -122,8 +124,10 @@ let make = (~dispatch) => {
         size: 1.,
       },
       {
-        content: "base",
-        onClick: _ => (), // PASS
+        content: base_display,
+        onClick: _ => {
+          dispatch(ChangeBase);
+        },
         size: 1.5,
       },
     |],
@@ -170,7 +174,13 @@ let make = (~dispatch) => {
           e->ReactEvent.Form.currentTarget##value->ChangeInput->dispatch
         }}
       />
-      <p className="calc__top__output"> {ans->string_of_ans->string} </p>
+      <p className="calc__top__output">
+        {ans
+         ->string_of_ans
+         ->float_of_string
+         ->Js.Float.toStringWithRadix(~radix=base_n)
+         ->string}
+      </p>
     </div>
     <ul className="calc__keys calc__keys--actions">
       {action_buttons

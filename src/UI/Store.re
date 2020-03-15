@@ -1,9 +1,19 @@
+type base = [ | `bin | `dec | `hex];
+let set_of_base = b =>
+  switch (b) {
+  | `bin => (2, "bin")
+  | `dec => (10, "dec")
+  | `hex => (16, "hex")
+  };
+
 type app_state = {
   vars: list(string),
   funcs: list(string),
   input: string,
   history: list(string),
+  history_i: int,
   ans: Grammar.node,
+  base,
 };
 
 type app_action =
@@ -23,6 +33,8 @@ type app_action =
   | ChangeInput(string)
   | ConcatInput(string, int)
   | Del(int)
+  | LoadHist(int)
+  | ChangeBase
   | Calc;
 
 let move_item = (arr, var_i, i') =>
@@ -75,9 +87,27 @@ let app_reducer = (state, action) =>
     {
       ...state,
       input: "",
+      history_i: 0,
       history: [state.input, ...state.history],
       ans: Grammar.Number(ans->Js.Float.toString),
     };
+
+  | LoadHist(di) =>
+    let input = Belt.List.get(state.history, state.history_i);
+    switch (input) {
+    | Some(input) => {...state, input, history_i: state.history_i + di}
+    | None => {...state, history_i: 0}
+    };
+
+  | ChangeBase =>
+    let base =
+      switch (state.base) {
+      | `bin => `dec
+      | `dec => `hex
+      | `hex => `bin
+      };
+
+    {...state, base};
 
   | Del(offset) =>
     let s = state.input;
@@ -126,7 +156,9 @@ let app_store: Reductive.Store.t(app_action, app_state) =
       funcs: [],
       input: "",
       history: [],
+      history_i: 0,
       ans: Grammar.Number("0"),
+      base: `dec,
     },
     (),
   );
