@@ -110,6 +110,11 @@ let app_reducer = (state, action) =>
       vars:
         state.vars->Belt.List.mapWithIndex((j, v) => i == j ? new_val : v),
     }
+  | UpdateFunc(new_val, i) => {
+      ...state,
+      vars:
+        state.funcs->Belt.List.mapWithIndex((j, v) => i == j ? new_val : v),
+    }
 
   | _ => state
   };
