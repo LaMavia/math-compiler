@@ -6,7 +6,7 @@
     "start": "bsb -make-world -w -ws _ ",
     "clean": "bsb -clean-world",
     "server": "moduleserve ./dev --port 8000",
-    "dev": "concurrently \"webpack-dev-server\" \"webpack -w\" ",
+    "dev": "concurrently \"bsb -w\" \"webpack-dev-server\" \"webpack -w\" ",
     "test": "npm run build && jest",
     "sass": "sass ./sass/index.scss ./build/css/index.css --watch  --load-path=node_modules/",
     "sass:production": "sass ./sass/index.scss ./build/css/index.css --style=compressed",
