@@ -42,6 +42,7 @@ let static_functions =
     {name: "log", eval: log},
     {name: "neg", eval: (~-.)},
     {name: "abs", eval: abs_float},
+    {name: "sqrt", eval: sqrt},
     {
       name: "zeta",
       eval: s => {
