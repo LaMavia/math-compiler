@@ -1,5 +1,4 @@
 open Store;
-open Reductive;
 open React;
 
 [@react.component]

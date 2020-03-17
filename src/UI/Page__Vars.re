@@ -1,6 +1,4 @@
 open Store;
-open Reductive;
-open React;
 let vars_selector = state => state.vars;
 
 [@react.component]

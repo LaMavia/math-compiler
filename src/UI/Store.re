@@ -53,10 +53,9 @@ let move_item = (arr, var_i, i') =>
     );
   };
 
-let app_reducer = (state, action) =>
-  {
-    let i0 = -1;
-    switch (action) {
+let app_reducer = (state, action) => {
+  let i0 = (-1);
+  switch (action) {
   | ChangeInput(n_inp) => {...state, input: n_inp}
   | ConcatInput(str, offset) =>
     let s = state.input;
@@ -164,7 +163,8 @@ let app_reducer = (state, action) =>
     }
 
   | _ => state
-  }};
+  };
+};
 let app_store: Reductive.Store.t(app_action, app_state) =
   Reductive.Store.create(
     ~reducer=app_reducer,

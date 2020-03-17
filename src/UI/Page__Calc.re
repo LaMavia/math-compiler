@@ -38,7 +38,6 @@ let make = (~dispatch) => {
           let o' = o + n;
           (m, o' > len - 1 || o' < 0 ? o : o');
         | ChangeOffset(n) => (m, n)
-        | _ => (m, o)
         },
       (`main, 0),
     );

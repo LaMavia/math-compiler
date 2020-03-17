@@ -1,6 +1,4 @@
 open Store;
-open Reductive;
-open React;
 let funcs_selector = state => state.funcs;
 
 [@react.component]

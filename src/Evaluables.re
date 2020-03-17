@@ -76,11 +76,11 @@ let operators = [|
   {name: "mod", identity: max_float, eval: mod_float},
   {name: "root", identity: max_float, eval: Math.root},
   {
-    name: "C",
+    name: "choose",
     identity: 1.0,
     eval: (n, k) => fact(n) /. (fact(k) *. fact(n -. k)),
   },
-  {name: "P", identity: 1.0, eval: (n, k) => fact(n) /. fact(n -. k)},
+  {name: "perm", identity: 1.0, eval: (n, k) => fact(n) /. fact(n -. k)},
 |];
 
 let eval_op = (op, f) =>
