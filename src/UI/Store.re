@@ -33,6 +33,7 @@ type app_action =
   | ChangeInput(string)
   | ConcatInput(string, int)
   | Del(int)
+  | AC
   | LoadHist(int)
   | ChangeBase
   | Calc;
@@ -120,6 +121,7 @@ let app_reducer = (state, action) =>
           ++ sliceToEnd(s, ~from=len - offset)
         ),
     };
+  | AC => {...state, input: "", ans: Number("0"), history_i: 0}
 
   | AddVar(v) => {...state, input: "", vars: [v, ...state.vars]}
   | AddFunc(f) => {...state, input: "", funcs: [f, ...state.funcs]}

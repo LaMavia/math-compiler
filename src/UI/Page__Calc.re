@@ -70,7 +70,7 @@ let make = (~dispatch) => {
       {
         content: "ac",
         onClick: _ => {
-          dispatch(ChangeInput(""));
+          dispatch(AC);
           local_dispatch(ChangeOffset(0));
         },
         size: 1.0,

@@ -34,10 +34,9 @@ let exec = (tree, global_scope, funcs) => {
       let f_def = get_func(funcs, f);
       switch (f_def) {
       | UserFunc({var, exp}) =>
-        let f_scope = [
-          {name: var, val_: calc(arg, scope)->Js.Float.toString->Number},
-          ...scope,
-        ];
+        let v = calc(arg, scope)->Js.Float.toString;
+        Js.log(v);
+        let f_scope = [{name: var, val_: v->Number}, ...scope];
         calc(exp, f_scope);
       | StaticFunc({eval}) => eval(calc(arg, scope))
       };
