@@ -14,6 +14,16 @@ type func =
   | UserFunc(func_exp)
   | StaticFunc(func_static);
 
+let fact = {
+  let rec f = n =>
+    if (n < 2.0) {
+      1.0;
+    } else {
+      n *. f(n -. 1.0);
+    };
+  f;
+};
+
 let static_functions =
   [|
     // cos
@@ -28,21 +38,25 @@ let static_functions =
     {name: "tan", eval: tan},
     {name: "atan", eval: atan},
     {name: "tanh", eval: tanh},
+    // rest
     {name: "log", eval: log},
     {name: "neg", eval: (~-.)},
     {name: "abs", eval: abs_float},
     {
-      name: "!",
-      eval: {
+      name: "zeta",
+      eval: s => {
+        let range = 1000.0;
+
         let rec f = n =>
-          if (n < 2.0) {
-            1.0;
+          if (n >= range) {
+            1. /. n ** s;
           } else {
-            n *. f(n -. 1.0);
+            1. /. n ** s +. f(n +. 1.);
           };
-        f;
+        f(1.);
       },
     },
+    {name: "!", eval: fact},
   |]
   |> Array.map(x => StaticFunc(x));
 
@@ -61,6 +75,12 @@ let operators = [|
   {name: "_", identity: 1.0, eval: Math.root}, //
   {name: "mod", identity: max_float, eval: mod_float},
   {name: "root", identity: max_float, eval: Math.root},
+  {
+    name: "C",
+    identity: 1.0,
+    eval: (n, k) => fact(n) /. (fact(k) *. fact(n -. k)),
+  },
+  {name: "P", identity: 1.0, eval: (n, k) => fact(n) /. fact(n -. k)},
 |];
 
 let eval_op = (op, f) =>
@@ -79,11 +99,17 @@ type var = {
   val_: node,
 };
 
-let global_scope = [
-  {name: "e", val_: Js.Math._E->Js.Float.toString->Grammar.Number},
-  {name: "pi", val_: Js.Math._PI->Js.Float.toString->Grammar.Number},
-  {name: "R", val_: 8.31->Js.Float.toString->Grammar.Number},
-];
+let global_scope =
+  [
+    ("e", Js.Math._E),
+    ("pi", Js.Math._PI),
+    ("R", 8.31),
+    ("kb", 1.38064852),
+    ("Na", 6.02214086),
+  ]
+  ->Belt.List.map(((name, val_)) =>
+      {name, val_: val_->Js.Float.toString->Grammar.Number}
+    );
 
 let is_op = c => Array.exists(({name}: operator) => {name == c}, operators);
 let is_suffix = c => ["!"] |> List.exists(o => o == c);

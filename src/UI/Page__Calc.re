@@ -138,21 +138,21 @@ let make = (~dispatch) => {
       ("8", "v"),
       ("9", "t"),
       ("+", "sin("),
-      ("-", "asin("),
+      ("-", "log("),
     |],
     [|
       ("4", "y"),
       ("5", "a"),
       ("6", "r"),
       ("*", "cos("),
-      ("/", "acos("),
+      ("/", "abs("),
     |],
     [|
       ("1", "pi"),
       ("2", "e"),
       ("3", "kb"),
       ("^", "tan("),
-      ("_", "atan("),
+      ("_", "zeta("),
     |],
     [|
       (".", "="),
@@ -164,6 +164,15 @@ let make = (~dispatch) => {
   |];
   <form onSubmit={e => {e->ReactEvent.Form.preventDefault}} className="calc">
     <div className="calc__top">
+      <div
+        style=ReactDOMRe.Style.(
+          make()
+          ->unsafeAddProp("--len", input->String.length->string_of_int)
+          ->unsafeAddProp("--offset", offset->string_of_int)
+        )
+        className="calc__top__cursor">
+        "_"->string
+      </div>
       <input
         type_="text"
         name="input"

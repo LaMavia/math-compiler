@@ -94,10 +94,23 @@ let app_reducer = (state, action) =>
     };
 
   | LoadHist(di) =>
-    let input = Belt.List.get(state.history, state.history_i);
-    switch (input) {
-    | Some(input) => {...state, input, history_i: state.history_i + di}
-    | None => {...state, history_i: 0}
+    let i' = state.history_i + di;
+    let input =
+      Belt.List.get(state.history, i')
+      ->Belt.Option.getWithDefault(state.input);
+    let hist_len = state.history->List.length;
+
+    {
+      ...state,
+      input,
+      history_i:
+        if (i' < 0) {
+          0;
+        } else if (i' > hist_len - 1) {
+          hist_len - 1;
+        } else {
+          i';
+        },
     };
 
   | ChangeBase =>
@@ -144,7 +157,7 @@ let app_reducer = (state, action) =>
     }
   | UpdateFunc(new_val, i) => {
       ...state,
-      vars:
+      funcs:
         state.funcs->Belt.List.mapWithIndex((j, v) => i == j ? new_val : v),
     }
 
@@ -155,10 +168,10 @@ let app_store: Reductive.Store.t(app_action, app_state) =
     ~reducer=app_reducer,
     ~preloadedState={
       vars: ["x=12^2", "y=1^3+2", "z=16-4"],
-      funcs: [],
+      funcs: ["f(x) = e^x + e^(-x)"],
       input: "",
       history: [],
-      history_i: 0,
+      history_i: (-1),
       ans: Grammar.Number("0"),
       base: `dec,
     },

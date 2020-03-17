@@ -2,7 +2,7 @@
   --var-h: 10vh;
 }
 .vars {
-  background-color: #2c2c2c;
+  background-color: #292929;
   height: 100%;
   width: 100%;
 
@@ -48,6 +48,7 @@
         line-height: calc(var(--var-h) / 2);
         text-align: center;
         transform: rotate(90deg);
+        font-size: 1.3rem;
       }
     }
   }
