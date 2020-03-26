@@ -144,6 +144,10 @@ let app_reducer = (state, action) => {
       ...state,
       vars: state.vars->Belt.List.keepWithIndex((_, j) => j != i),
     }
+  | RemoveFunc(i) => {
+      ...state,
+      funcs: state.funcs->Belt.List.keepWithIndex((_, j) => j != i),
+    }
 
   | MoveVar(var_i, i') => {...state, vars: move_item(state.vars, var_i, i')}
   | MoveFunc(func_i, i') => {

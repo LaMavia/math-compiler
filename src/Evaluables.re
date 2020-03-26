@@ -43,6 +43,9 @@ let static_functions =
     {name: "neg", eval: (~-.)},
     {name: "abs", eval: abs_float},
     {name: "sqrt", eval: sqrt},
+    {name: "ceil", eval: ceil},
+    {name: "round", eval: Js.Math.round},
+    {name: "floor", eval: floor},
     {
       name: "zeta",
       eval: s => {
