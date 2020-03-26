@@ -132,20 +132,8 @@ let make = (~dispatch) => {
     |],
   |];
   let buttons: array(array(button)) = [|
-    [|
-      ("7", "x"),
-      ("8", "v"),
-      ("9", "t"),
-      ("+", "sin("),
-      ("-", "log("),
-    |],
-    [|
-      ("4", "y"),
-      ("5", "a"),
-      ("6", "r"),
-      ("*", "cos("),
-      ("/", "abs("),
-    |],
+    [|("7", "x"), ("8", "v"), ("9", "t"), ("+", "sin("), ("-", "log(")|],
+    [|("4", "y"), ("5", "a"), ("6", "r"), ("*", "cos("), ("/", "abs(")|],
     [|
       ("1", "pi"),
       ("2", "e"),
@@ -183,11 +171,14 @@ let make = (~dispatch) => {
         }}
       />
       <p className="calc__top__output">
-        {ans
-         ->string_of_ans
-         ->float_of_string
-         ->Js.Float.toStringWithRadix(~radix=base_n)
-         ->string}
+        {let f = ans->string_of_ans->float_of_string;
+         (
+           switch (base) {
+           | `dec => Js.Float.toExponentialWithPrecision(f, ~digits=8)
+           | _ => Js.Float.toStringWithRadix(f, ~radix=base_n)
+           }
+         )
+         |> string}
       </p>
     </div>
     <ul className="calc__keys calc__keys--actions">

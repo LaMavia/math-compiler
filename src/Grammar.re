@@ -9,8 +9,8 @@ type rune =
 
 type special =
   | Bracket(bracket)
-  // | Absolute(bracket)
-  // | Assign
+// | Absolute(bracket)
+// | Assign
 and bracket =
   | Open
   | Close;
@@ -46,6 +46,7 @@ let weight = op =>
   | "/" => 1
   | "^"
   | "_" => 2
+  | "#" => 4
   | a =>
     Js.Console.log({j|$a|j});
     3;

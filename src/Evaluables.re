@@ -77,6 +77,7 @@ let operators = [|
   {name: "/", identity: 1.0, eval: (/.)},
   {name: "^", identity: 1.0, eval: ( ** )},
   {name: "_", identity: 1.0, eval: Math.root}, //
+  {name: "#", identity: 0.0, eval: (a, e) => a *. 10. ** e},
   {name: "mod", identity: max_float, eval: mod_float},
   {name: "root", identity: max_float, eval: Math.root},
   {
@@ -108,8 +109,8 @@ let global_scope =
     ("e", Js.Math._E),
     ("pi", Js.Math._PI),
     ("R", 8.31),
-    ("kb", 1.38064852),
-    ("Na", 6.02214086),
+    ("kb", 1.38064852 *. 10. ** (-23.)),
+    ("Na", 6.02214086 *. 10. ** 23.),
   ]
   ->Belt.List.map(((name, val_)) =>
       {name, val_: val_->Js.Float.toString->Grammar.Number}
